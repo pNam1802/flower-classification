@@ -1,1 +1,5 @@
 flower_classifier_full.pth
+venv/
+__pycache__/
+*.pyc
+.env
