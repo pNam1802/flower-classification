@@ -35,7 +35,7 @@
                 Bộ Sưu Tập <span class="text-green-600">Hoa</span> 📸
             </h1>
             <p class="text-xl text-gray-500 max-w-3xl mx-auto">
-                Khám phá {{ flower_list|length }} loài hoa độc đáo đã được huấn luyện trong mô hình AI của chúng tôi.
+                Khám phá {{ flowers|length }} loài hoa độc đáo đã được huấn luyện trong mô hình AI của chúng tôi.
             </p>
         </div>
 
@@ -70,7 +70,7 @@
 
 </div>
 
-        {% if not flower_list %}
+        {% if not flowers %}
         <div class="text-center py-16 bg-white rounded-xl shadow-lg border border-red-200">
             <p class="text-xl text-red-500 font-semibold">Chưa tìm thấy danh sách loài hoa. Vui lòng kiểm tra file `flower_names.json`.</p>
         </div>
