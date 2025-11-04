@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Loại Hoa - Flower AI Classifier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Tùy chỉnh font cho toàn bộ trang */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc; /* Màu nền rất nhạt */
+        }
+        /* Custom scrollbar style (optional) */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background-color: #4CAF50; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background-color: #e2e8f0; }
+        .result-section { min-height: 400px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-2xl font-bold text-green-700 tracking-wider">
+                <span class="text-green-500">❀</span> FlowerAI
+            </a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#upload-section" class="text-green-600 font-semibold border-b-2 border-green-600 transition duration-150">Phân loại</a>
+                <a href="{{ url_for('gallery') }}" class="text-gray-600 hover:text-green-600 transition duration-150">Bộ sưu tập</a>
+                <a href="{{ url_for('about') }}" class="text-gray-600 hover:text-green-600 transition duration-150">Về chúng tôi</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+
+        <section id="upload-section" class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
+                Khám Phá Thế Giới Hoa
+            </h1>
+            <p class="text-xl text-gray-500 mb-8">
+                Tải ảnh lên và để AI nhận diện loài hoa của bạn trong tích tắc.
+            </p>
+
+            <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border-2 border-dashed border-green-300 transition duration-300 hover:border-green-500 max-w-2xl mx-auto">
+                <form action="/" method="post" enctype="multipart/form-data" id="uploadForm">
+                    <label for="file-upload" class="cursor-pointer block">
+                        <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        <p class="mt-2 text-sm text-gray-600 font-medium" id="fileNameDisplay">
+                            Kéo và thả ảnh hoặc Nhấn vào đây để chọn tệp
+                        </p>
+                        <input id="file-upload" name="file" type="file" class="hidden" accept="image/*" required onchange="handleFileSelect(event)">
+                    </label>
+                    <button type="submit"
+                            id="submitButton"
+                            class="mt-6 w-full md:w-auto px-8 py-3 text-lg font-semibold text-white bg-green-600 rounded-full shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition duration-150 transform hover:scale-105"
+                            onclick="showLoading()">
+                        Phân Loại Ngay
+                    </button>
+                </form>
+            </div>
+
+            <div id="loadingIndicator" class="mt-8 hidden">
+                <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-green-500 motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                    <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                </div>
+                <p class="text-green-600 font-medium mt-2">AI đang phân tích, vui lòng chờ...</p>
+            </div>
+        </section>
+
+        {% if uploaded_image or error %}
+        <section id="result-section" class="result-section pt-10 border-t border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-green-500 pl-3">
+                {% if error %} Kết Quả Thất Bại {% else %} Kết Quả Phân Loại {% endif %}
+            </h2>
+
+            {% if error %}
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md" role="alert">
+                    <p class="font-bold">Lỗi Xảy Ra!</p>
+                    <p>{{ error }}</p>
+                    <p class="mt-2">Vui lòng thử lại với một hình ảnh khác, sắc nét hơn.</p>
+                </div>
+            {% else %}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-6">
+                            <img src="{{ uploaded_image }}" alt="Ảnh đã tải lên" class="w-full h-auto object-cover max-h-96">
+                        </div>
+
+                        {% if predictions %}
+                            <div class="bg-green-600 text-white p-4 rounded-lg shadow-lg">
+                                <p class="text-sm font-light opacity-80">Kết Quả Chính Xác Nhất:</p>
+                                <h3 class="text-3xl font-extrabold mt-1">{{ top_flower | title }}</h3>
+                                <p class="text-base mt-2 font-medium">Độ tin cậy: <span class="text-yellow-300 font-bold">{{ (predictions[0][1] * 100) | round(1) }}%</span></p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-8">
+
+                        <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                            {% set flower_name_key = top_flower | lower %}
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">Thông Tin Chi Tiết về Loài <span class="text-green-600">{{ top_flower | title }}</span></h3>
+
+                            {% if flower_info[flower_name_key] %}
+                                <p class="text-gray-600 leading-relaxed">{{ flower_info[flower_name_key] }}</p>
+                            {% else %}
+                                <p class="text-gray-500 italic">Không tìm thấy thông tin mô tả chi tiết từ Wikipedia.</p>
+                            {% endif %}
+                        </div>
+
+                        {% if related_images %}
+                        <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Hình Ảnh Liên Quan</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {% for image_url in related_images %}
+                                <div class="relative overflow-hidden rounded-lg shadow-md aspect-square">
+                                    <img src="{{ image_url }}" alt="Hình ảnh liên quan" class="w-full h-full object-cover transition duration-300 hover:scale-105">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if predictions|length > 1 %}
+                        <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Các Dự Đoán Khác</h3>
+                            <ul class="space-y-3">
+                                {% for flower, score in predictions[1:] %}
+                                <li class="flex justify-between items-center border-b border-gray-100 pb-2">
+                                    <span class="text-lg text-gray-700 font-medium">{{ flower | title }}</span>
+                                    <span class="text-green-500 font-semibold">{{ (score * 100) | round(1) }}%</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+        {% endif %}
+        </main>
+
+    <footer class="bg-gray-800 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+            <p>&copy; 2025 Flower AI Classifier. Được xây dựng dựa trên PyTorch và Flask.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-white transition duration-150">Chính sách</a>
+                <span class="text-gray-600">|</span>
+                <a href="mailto:contact@floweria.com" class="hover:text-white transition duration-150">Liên hệ</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hàm hiển thị tên file được chọn
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const display = document.getElementById('fileNameDisplay');
+            if (file) {
+                display.textContent = `Đã chọn: ${file.name}`;
+                // Tùy chọn: Tự động submit sau khi chọn file
+                // document.getElementById('uploadForm').submit();
+            } else {
+                display.textContent = "Kéo và thả ảnh hoặc **Nhấn vào đây để chọn tệp**";
+            }
+        }
+
+        // Hàm hiển thị Loading khi người dùng nhấn nút submit
+        function showLoading() {
+            const fileInput = document.getElementById('file-upload');
+            if (!fileInput.files.length) {
+                return; // Ngăn chặn nếu chưa chọn file (HTML already handles 'required')
+            }
+
+            // Ẩn nút submit và hiển thị loading
+            document.getElementById('submitButton').classList.add('hidden');
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+
+            // Cuộn lên đầu phần kết quả để người dùng thấy trạng thái
+            document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Khôi phục trạng thái nút nếu trang được load lại do lỗi
+        window.onload = function() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const submitButton = document.getElementById('submitButton');
+
+            // Nếu có kết quả hoặc lỗi, loading phải được ẩn đi
+            if (loadingIndicator && submitButton) {
+                loadingIndicator.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+            }
+        };
+
+        // Bổ sung Drag & Drop (Nâng cao UX)
+        const dropzone = document.getElementById('uploadForm').parentElement;
+        const fileInput = document.getElementById('file-upload');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) { dropzone.classList.add('border-green-600'); }
+        function unhighlight(e) { dropzone.classList.remove('border-green-600'); }
+
+        dropzone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            fileInput.files = files;
+            handleFileSelect({ target: fileInput });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về Chúng Tôi - Flower AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7fafc; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background-color: #4CAF50; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background-color: #e2e8f0; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-2xl font-bold text-green-700 tracking-wider">
+                <span class="text-green-500">❀</span> FlowerAI
+            </a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="{{ url_for('index') }}#upload-section" class="text-gray-600 hover:text-green-600 transition duration-150">Phân loại</a>
+                <a href="{{ url_for('gallery') }}" class="text-gray-600 hover:text-green-600 transition duration-150">Bộ sưu tập</a>
+                <a href="{{ url_for('about') }}" class="text-green-600 font-semibold transition duration-150 border-b-2 border-green-600">Về chúng tôi</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
+
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-gray-900 mb-4">
+                Về <span class="text-green-600">FlowerAI Classifier</span> 💡
+            </h1>
+            <p class="text-xl text-gray-500 max-w-3xl mx-auto">
+                Chúng tôi tạo ra công cụ này để kết nối mọi người với thế giới thực vật bằng sức mạnh của AI.
+            </p>
+        </div>
+
+        <div class="space-y-12">
+            <div class="bg-white p-8 rounded-xl shadow-xl border-l-4 border-green-500">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg class="h-8 w-8 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2h-1a2 2 0 00-2 2v1m-4-1h4m4 0h4m-4-4h4m-4 8h4m-4-8h4m-4-4h4m-4-4h4"></path></svg>
+                    Sứ Mệnh và Tầm Nhìn
+                </h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Sứ mệnh của chúng tôi là làm cho việc nhận dạng thực vật trở nên dễ dàng và thú vị cho tất cả mọi người, từ người làm vườn đến nhà khoa học. Chúng tôi hình dung ra một thế giới mà bất kỳ ai cũng có thể khám phá và trân trọng sự đa dạng sinh học chỉ bằng một bức ảnh.
+                </p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-xl border-l-4 border-blue-500">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg class="h-8 w-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1.5-1.5A3.75 3.75 0 014.5 20.25v-2.25m4.5 2.25h5.25A2.25 2.25 0 0017 18.75V8.25A2.25 2.25 0 0014.75 6H8.25A2.25 2.25 0 006 8.25v10.5M10.5 12h.008M13.5 12h.008M16.5 12h.008"></path></svg>
+                    Công Nghệ AI
+                </h2>
+                <ul class="list-disc list-inside space-y-3 text-gray-700">
+                    <li>Mô hình: Sử dụng kiến trúc ResNet-50 tiền huấn luyện trên ImageNet, sau đó được tinh chỉnh trên bộ dữ liệu 102 loại hoa.</li>
+                    <li>Khung làm việc: Phát triển với PyTorch cho Deep Learning và Flask cho ứng dụng web.</li>
+                    <li>Dữ liệu:Được huấn luyện trên hơn 8,000 hình ảnh chất lượng cao để đảm bảo độ chính xác vượt trội.</li>
+                    <li>API bên ngoài:Tích hợp Wikipedia API để cung cấp thông tin chi tiết và Unsplash API để tìm kiếm hình ảnh liên quan.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-xl border-l-4 border-yellow-500">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg class="h-8 w-8 text-yellow-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.68-1.57A4 4 0 0015 9a4 4 0 00-7.79 0A3.72 3.72 0 005.68 18.43L1 20h5m11 0v-1a5 5 0 00-10 0v1"></path></svg>
+                    Đội Ngũ Phát Triển
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-4 border border-gray-100 rounded-lg">
+                        <p class="font-bold text-green-700">Nguyễn Phương Nam</p>
+                        <p class="text-sm text-gray-600">Trưởng nhóm Phát triển AI & Backend</p>
+                    </div>
+                    <div class="p-4 border border-gray-100 rounded-lg">
+                        <p class="font-bold text-green-700">Nguyễn Văn Tiến</p>
+                        <p class="text-sm text-gray-600">Frontend & Thiết Kế UI/UX</p>
+                    </div>
+		   <div class="p-4 border border-gray-100 rounded-lg">
+                        <p class="font-bold text-green-700">Nguyễn Văn Thịnh</p>
+                        <p class="text-sm text-gray-600">Backend & xây dựng chức năng web</p>
+                    </div>
+
+                    </div>
+            </div>
+
+            <div class="mt-12 text-center bg-green-50 p-8 rounded-xl border border-green-200">
+                <h3 class="text-2xl font-bold text-green-700 mb-3">Bạn có muốn đóng góp hoặc liên hệ?</h3>
+                <p class="text-gray-600 mb-4">Mọi phản hồi, đề xuất hoặc báo cáo lỗi đều được hoan nghênh!</p>
+                <a href="mailto:contact@floweria.com" class="inline-block px-8 py-3 text-lg font-semibold text-white bg-green-600 rounded-full shadow-lg hover:bg-green-700 transition duration-150 transform hover:scale-105">
+                    Liên hệ với chúng tôi
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+            <p>&copy; 2025 Flower AI Classifier. Được xây dựng dựa trên PyTorch và Flask.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-white transition duration-150">Chính sách</a>
+                <span class="text-gray-600">|</span>
+                <a href="mailto:contact@floweria.com" class="hover:text-white transition duration-150">Liên hệ</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
