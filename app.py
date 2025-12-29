@@ -13,9 +13,8 @@ import requests
 # --- Cấu hình Flask và Thư mục Upload ---
 app = Flask(__name__)
 
-# Cấu hình khóa Unsplash: Ưu tiên đọc từ biến môi trường
-# Bạn cần thiết lập biến môi trường UNSPLASH_API_KEY hoặc thay chuỗi placeholder bên dưới
-UNSPLASH_ACCESS_KEY = os.environ.get('UNSPLASH_API_KEY', 'Q7D2_l9tU1ZAShxdRg7P_K6gYiIutrGo0L5QXBGx4lw') 
+
+UNSPLASH_ACCESS_KEY = os.environ.get('UNSPLASH_API_KEY', 'key for UNSPLASH_ACCESS_KEY')
 
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
